@@ -64,7 +64,7 @@ const unsanitizedNumber = (input: string): UnsanitizedNumber | null => {
  * More practical applications of this could be making sure an email input by a
  * user is indeed formatted as an email.
  */
-const sanitizedNumber = (input: UnsanitizedNumber): SanitizedNumber | null => {
+const sanitizedNumber = (input: UnsanitizedNumber | null): SanitizedNumber | null | InvalidNumber => {
   if(input == null) {
     // If null, just pass the error along.
     return null
@@ -72,10 +72,10 @@ const sanitizedNumber = (input: UnsanitizedNumber): SanitizedNumber | null => {
     if(input.value > 0 && input.value <= 10) {
       return {
         kind: 'sanitized-number',
-        value: input,
+        value: input.value,
       }
-    } else {
-      return null
+    } else return {
+      kind: 'invalid-number',
     }
   }
 }
@@ -84,7 +84,7 @@ const sanitizedNumber = (input: UnsanitizedNumber): SanitizedNumber | null => {
 // Note this function does not return anything. How to annotate it?
 // We also don't particularly care what is passed in. How do we annotate a
 // parameter whose shape we care nothing about?
-function showError(x) {
+function showError(x: any) {
   console.error(`${x} is not what I asked for.`)
 }
 
@@ -120,7 +120,7 @@ function showError(x) {
     }
   } while(finalNumber.kind != 'sanitized-number')
 
-  console.log(`You did what I wanted and gave me ${finalNumber.value}!`)
+  console.log(`You did what I wanted and gave me ${finalNumber}!`)
   process.exit(0)
 
   // Immediately call the function we just declared to complete the async hack.
